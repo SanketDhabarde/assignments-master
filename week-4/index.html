@@ -7,16 +7,14 @@
     let todoState = [];
     let oldTodoState = [];
 
-    function addTodoToDom() {
-      
+    function removeTodoFromDom(id) {
+        todoState = todoState.filter(todo => todo.id !== id);
+        updateState(todoState);
     }
 
-    function removeTodoFromDom(todo) {
-      
-    }
-
-    function updateTodoInDom(oldTodo, newTodo) {
-        
+    function updateTodoInDom(id) {
+        todoState = todoState.map(todo => todo.id === id ? ({...todo, done: true}): todo);
+        updateState(todoState);
     }
 
     function updateState(newTodos) {
@@ -25,13 +23,40 @@
       // 1. added
       // 2. deleted
       // 3. updated
-      const added = [];
-      const deleted = [];
-      const updated = [];
+      const added = newTodos.filter(todo => !oldTodoState.some(_todo => _todo.id === todo.id));
+      const deleted = oldTodoState.filter(todo => !newTodos.some(_todo => _todo.id === todo.id));
+      const updated = newTodos.filter(todo => !oldTodoState.some(_todo => _todo.id === todo.id && _todo.title === todo.title && _todo.description === todo.description && _todo.done === todo.done));
       // calculate these 3 arrays
       // call addTodo, removeTodo, updateTodo functions on each of the
       // elements
-      oldTodoState = newTodos;
+      const todos = document.getElementById("todos");
+      console.log(todos.children);
+      todos.innerHTML = "";
+      newTodos.forEach(todo => {
+        const parentDiv = document.createElement("div");
+        const siblingOneDiv = document.createElement("div");
+        const siblingTwoDiv = document.createElement("div");
+        const siblingThreeBtn = document.createElement("button");
+        const siblingFourBtn = document.createElement("button");
+
+        siblingOneDiv.innerHTML = todo.title;
+        siblingTwoDiv.innerHTML = todo.description;
+        siblingThreeBtn.innerHTML = `${todo.done ? "Done" : "Mark as done!" }`;
+        siblingFourBtn.innerHTML = "Remove";
+
+        parentDiv.appendChild(siblingOneDiv);
+        parentDiv.appendChild(siblingTwoDiv);
+        parentDiv.appendChild(siblingThreeBtn);
+        parentDiv.appendChild(siblingFourBtn);
+
+        parentDiv.setAttribute("id", `${todo.id}`);
+        siblingThreeBtn.setAttribute("onclick", `updateTodoInDom(${todo.id})`);
+        siblingFourBtn.setAttribute("onclick", `removeTodoFromDom(${todo.id})`);
+
+        todos.appendChild(parentDiv);
+      });
+      
+      oldTodoState = [...newTodos];
     }
 
     function addTodo() {
@@ -41,6 +66,7 @@
         title: title,
         description: description,
         id: globalId++,
+        done: false
       })
       updateState(todoState);
     }
