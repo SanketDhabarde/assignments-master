@@ -33,17 +33,75 @@ const CARDS: Card[] = [
 
 function App() {
   const [cards, setCards] = useState(CARDS);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [interests, setInterests] = useState("");
+  const [linkedIn, setlinkedIn] = useState("");
+  const [twitter, setTwitter] = useState("");
+
+  function createCardHandler() {
+    const newCard = {
+      id: cards.length + 1,
+      name,
+      description,
+      interests: interests.split(";"),
+      socials: [
+        {
+          title: "linkedIn",
+          link: linkedIn,
+        },
+        { title: "Twitter", link: twitter },
+      ],
+    };
+    setCards([...cards, newCard]);
+  }
+
   return (
-    <div>
-      {cards.map(({ name, description, interests, socials }) => (
-        <Card
-          name={name}
-          description={description}
-          interests={interests}
-          socials={socials}
+    <>
+      <div className="user-input">
+        <input
+          type="text"
+          value={name}
+          placeholder="Name"
+          onChange={(e) => setName(e.target.value)}
         />
-      ))}
-    </div>
+        <input
+          type="text"
+          value={description}
+          placeholder="Desciption"
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <input
+          type="text"
+          value={interests}
+          placeholder="Add ; seprate interensts"
+          onChange={(e) => setInterests(e.target.value)}
+        />
+        <input
+          type="text"
+          value={linkedIn}
+          placeholder="LinkedIn"
+          onChange={(e) => setlinkedIn(e.target.value)}
+        />
+        <input
+          type="text"
+          value={twitter}
+          placeholder="Twitter"
+          onChange={(e) => setTwitter(e.target.value)}
+        />
+        <button onClick={createCardHandler}>Create Card</button>
+      </div>
+      <div>
+        {cards.map(({ name, description, interests, socials }) => (
+          <Card
+            name={name}
+            description={description}
+            interests={interests}
+            socials={socials}
+          />
+        ))}
+      </div>
+    </>
   );
 }
 
