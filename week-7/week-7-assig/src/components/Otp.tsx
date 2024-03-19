@@ -42,6 +42,7 @@ function Otp({ length }: OtpProps) {
     <div>
       {otpInput.map((value, index) => (
         <input
+          key={index}
           ref={(input) => (inputRefs.current[index] = input)}
           type="text"
           className="border-2 border-black w-10 m-2"
